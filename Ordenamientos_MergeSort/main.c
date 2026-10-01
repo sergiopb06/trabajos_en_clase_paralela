@@ -17,6 +17,71 @@ void push(struct Node** tail, int new_data){
 
 }
 
+void splitList(struct Node* source, struct Node** frontRef, struct Node** backRef){
+    struct Node* fast;
+    struct Node* slow;
+    slow = source;
+    fast = source->next;
+
+    while (fast != NULL){
+        fast = fast->next;
+
+        if (fast != NULL){
+            slow = slow->next;
+            fast = fast->next;
+        }
+    }
+
+    *frontRef = source;
+    *backRef = slow->next;
+    slow->next = NULL;
+}
+
+
+struct Node* merge(struct Node* a, struct Node* b){
+    struct Node* result = NULL;
+
+    //Base cases 
+    if (a == NULL)
+        return (b);
+    else if (b == NULL)
+        return (a);
+
+
+    if (a->data <= b->data){
+        result = a;
+        result->next = SortedMerge(a->next, b);
+    }
+
+    else{
+        result = b;
+        result->next = SortedMerge(a, b->next);
+    }
+
+    return (result);
+}
+
+
+void mergeSort(struct Node** headRef){
+    struct Node* head = *headRef;
+    struct Node* a;
+    struct Node* b;
+
+
+    if ((head == NULL) || (head->next == NULL)){
+        return;
+    }
+
+
+    splitList(head, &a, &b);
+
+    mergeSort(&a);
+    mergeSort(&b);
+
+
+    *headRef = merge(a, b);
+}
+
 
 int main(){
     srand(time(NULL));
